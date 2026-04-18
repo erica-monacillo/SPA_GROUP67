@@ -94,3 +94,62 @@ def merge_sort_parallel(data):
             final_sorted_list = merge(final_sorted_list, sorted_chunks[i])
 
     return final_sorted_list
+
+# --- 4. Sequential Searching (Linear Search) ---
+
+def linear_search_sequential(arr, target):
+    """
+    Implements the sequential Linear Search algorithm.
+    Returns the index of the target if found, otherwise -1.
+    """
+    for i, element in enumerate(arr):
+        if element == target:
+            return i
+    return -1
+
+# --- 5. Parallel Searching (Parallel Linear Search) ---
+
+def linear_search_parallel_worker(sub_data, target, q, offset):
+    """
+    Worker function for parallel linear search. Searches a sub-chunk and puts the global index into a queue.
+    """
+    for i, element in enumerate(sub_data):
+        if element == target:
+            q.put(offset + i)
+            return
+    q.put(-1)
+
+
+def linear_search_parallel(data, target):
+    """
+    Implements the parallel Linear Search algorithm using multiprocessing.
+    Divides data into 4 chunks, searches them in parallel, and returns the global index.
+    """
+    chunk_size = len(data) // 4
+    chunks = [data[i:i + chunk_size] for i in range(0, len(data), chunk_size)]
+
+    if len(data) % 4 != 0:
+        chunks[-1].extend(data[len(chunks) * chunk_size:])
+
+    q = Queue()
+    processes = []
+    current_offset = 0
+
+    for chunk in chunks:
+        p = Process(target=linear_search_parallel_worker, args=(chunk, target, q, current_offset))
+        processes.append(p)
+        p.start()
+        current_offset += len(chunk)
+
+    results = []
+    for _ in processes:
+        results.append(q.get())
+
+    for p in processes:
+        p.join()
+
+    for res in results:
+        if res != -1:
+            return res
+
+    return -1
