@@ -2,7 +2,7 @@ import random
 import time
 from multiprocessing import Process, Queue
 
-# --- 1. Dataset Generation ---
+#Dataset Generation
 
 def generate_dataset(size, sorted_type=None):
     """
@@ -16,7 +16,7 @@ def generate_dataset(size, sorted_type=None):
         data.sort(reverse=True)
     return data
 
-# --- 2. Sequential Sorting (Merge Sort) ---
+#Sequential Sorting (Merge Sort) 
 
 def merge_sort_sequential(arr):
     """
@@ -53,7 +53,7 @@ def merge(left, right):
     merged.extend(right[right_idx:])
     return merged
 
-# --- 3. Parallel Sorting (Parallel Merge Sort) ---
+#Parallel Sorting (Parallel Merge Sort) 
 
 def merge_sort_parallel_worker(arr, q):
     """
@@ -95,7 +95,7 @@ def merge_sort_parallel(data):
 
     return final_sorted_list
 
-# --- 4. Sequential Searching (Linear Search) ---
+#Sequential Searching (Linear Search)
 
 def linear_search_sequential(arr, target):
     """
@@ -107,7 +107,7 @@ def linear_search_sequential(arr, target):
             return i
     return -1
 
-# --- 5. Parallel Searching (Parallel Linear Search) ---
+#Parallel Searching (Parallel Linear Search)
 
 def linear_search_parallel_worker(sub_data, target, q, offset):
     """
@@ -153,3 +153,12 @@ def linear_search_parallel(data, target):
             return res
 
     return -1
+
+#Performance Testing 
+
+def run_performance_test():
+    """
+    Runs performance tests for all algorithms across different dataset sizes and types.
+    """
+    dataset_sizes = {"Small": 1000, "Medium": 100000, "Large": 1000000}
+    sorted_types = {"Random": None, "Sorted": "sorted", "Reverse Sorted": "reverse_sorted"}
