@@ -53,3 +53,44 @@ def merge(left, right):
     merged.extend(right[right_idx:])
     return merged
 
+# --- 3. Parallel Sorting (Parallel Merge Sort) ---
+
+def merge_sort_parallel_worker(arr, q):
+    """
+    Worker function for parallel merge sort. Sorts a chunk and puts it into a queue.
+    """
+    sorted_chunk = merge_sort_sequential(arr)
+    q.put(sorted_chunk)
+
+def merge_sort_parallel(data):
+    """
+    Implements the parallel Merge Sort algorithm using multiprocessing.
+    Divides data into 4 chunks, sorts them in parallel, and merges the results.
+    """
+    chunk_size = len(data) // 4
+    chunks = [data[i:i + chunk_size] for i in range(0, len(data), chunk_size)]
+
+    if len(data) % 4 != 0:
+        chunks[-1].extend(data[len(chunks) * chunk_size:])
+
+    q = Queue()
+    processes = []
+
+    for chunk in chunks:
+        p = Process(target=merge_sort_parallel_worker, args=(chunk, q))
+        processes.append(p)
+        p.start()
+    sorted_chunks = []
+    for _ in processes:
+        sorted_chunks.append(q.get())
+
+    for p in processes:
+        p.join()
+
+    final_sorted_list = []
+    if sorted_chunks:
+        final_sorted_list = sorted_chunks[0]
+        for i in range(1, len(sorted_chunks)):
+            final_sorted_list = merge(final_sorted_list, sorted_chunks[i])
+
+    return final_sorted_list
