@@ -39,7 +39,7 @@ We also included special cases for already sorted and reverse-sorted data.
 
 ## Individual Reflections
 
-### ME
+### ERICA
 The transition from sequential to parallel thinking was the most significant challenge. Implementing the parallel merge sort required careful handling of data partitioning and merging. I observed that while parallelism offers great potential for speedup, the overhead of process management is a critical factor, especially for smaller workloads.
 
 ### SHENE
