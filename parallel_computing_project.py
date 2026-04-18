@@ -162,3 +162,64 @@ def run_performance_test():
     """
     dataset_sizes = {"Small": 1000, "Medium": 100000, "Large": 1000000}
     sorted_types = {"Random": None, "Sorted": "sorted", "Reverse Sorted": "reverse_sorted"}
+
+
+    print("Performance Evaluation")
+
+
+    for size_name, size in dataset_sizes.items():
+        for sorted_type_name, sorted_type in sorted_types.items():
+            print(f"\nDataset Size: {size_name} ({size} elements), Type: {sorted_type_name}")
+            data = generate_dataset(size, sorted_type)
+
+            #Sorting Tests
+            print("  Sorting Algorithms:")
+
+            #Sequential Merge Sort
+            start_time = time.time()
+            sorted_data_seq = merge_sort_sequential(list(data)) 
+            end_time = time.time()
+            print(f"    Sequential Merge Sort: {end_time - start_time:.6f} seconds")
+    
+            #Parallel Merge Sort
+            start_time = time.time()
+            sorted_data_par = merge_sort_parallel(list(data)) 
+            end_time = time.time()
+            print(f"    Parallel Merge Sort:   {end_time - start_time:.6f} seconds")
+    
+            #Searching Tests 
+            print("  Searching Algorithms:")
+            target_found = data[random.randint(0, size - 1)] if size > 0 else 1
+            target_not_found = 1000001 
+
+
+            #Sequential Linear Search (Target Found)
+            start_time = time.time()
+            index_seq_found = linear_search_sequential(data, target_found)
+            end_time = time.time()
+            print(f"    Sequential Linear Search (Found {target_found}): Index = {index_seq_found}, Time = {end_time - start_time:.6f} seconds")
+
+
+            #Parallel Linear Search(Target Found)
+            start_time = time.time()
+            index_par_found = linear_search_parallel(data, target_found)
+            end_time = time.time()
+            print(f"    Parallel Linear Search (Found {target_found}): Index = {index_par_found}, Time = {end_time - start_time:.6f} seconds")
+
+
+            #Sequential Linear Search (Target Not Found)
+            start_time = time.time()
+            index_seq_not_found = linear_search_sequential(data, target_not_found)
+            end_time = time.time()
+            print(f"    Sequential Linear Search (Not Found {target_not_found}): Index = {index_seq_not_found}, Time = {end_time - start_time:.6f} seconds")
+
+
+            #Parallel Linear Search (Target Not Found)
+            start_time = time.time()
+            index_par_not_found = linear_search_parallel(data, target_not_found)
+            end_time = time.time()
+            print(f"    Parallel Linear Search (Not Found {target_not_found}): Index = {index_par_not_found}, Time = {end_time - start_time:.6f} seconds")
+
+
+if __name__ == "__main__":
+    run_performance_test()
